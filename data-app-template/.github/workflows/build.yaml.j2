@@ -1,0 +1,18 @@
+# WARNING: This file is managed by shared-data-libraries.
+# DO NOT MODIFY THIS FILE DIRECTLY.
+# Changes should be made in the source template at shared-data-libraries repository.
+
+name: Application Build
+on:
+  pull_request:
+    branches:
+      - main
+# Permission can be added at job level or workflow level
+permissions:
+  contents: read
+jobs:
+  workflow-call:
+    uses: webedx-spark/shared-data-libraries/.github/workflows/data-application-build.yaml@{{ courdata_version }}
+    with:
+      shared_library_ref: {{ courdata_version }} 
+    secrets: inherit

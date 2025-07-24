@@ -1,0 +1,19 @@
+# WARNING: This file is managed by shared-data-libraries.
+# DO NOT MODIFY THIS FILE DIRECTLY.
+# Changes should be made in the source template at shared-data-libraries repository.
+
+name: Application Code Deploy
+on:
+  push:
+    branches:
+      - main
+# Permission can be added at job level or workflow level
+permissions:
+  contents: write # This is required for creating release.
+  id-token: write # This is required to assume aws iam role. 
+jobs:
+  workflow-call:
+    uses: webedx-spark/shared-data-libraries/.github/workflows/data-application-code-deploy.yaml@{{ courdata_version }}
+    with:
+      shared_library_ref: {{ courdata_version }} 
+    secrets: inherit

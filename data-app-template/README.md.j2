@@ -1,0 +1,138 @@
+# {{name}}
+
+{{description}}
+
+## Project Structure
+
+- `notebooks/`: This is where all notebook files are stored. Notebooks are the entry points to your application code for jobs or streaming workloads. Notebooks can import from the application package or shared libraries or other dependencies of your applications. Notebooks are excluded from test coverage requirements and generally are not easy to unit test. Keeps the logic in your notebooks limited.
+- `{{name|replace('-', '_')}}/`: This is the application local Python package. You can import modules from this package in your notebooks. Sources under this package are included in test coverage requirements.
+- `tests/`: Unit tests for your application package code.
+- [`pyproject.toml`](https://packaging.python.org/en/latest/specifications/pyproject-toml/): Python project's core metadata file for packaging-related or other developer tools to consume [[PEP-621]](https://peps.python.org/pep-0621/). For the tool.poetry section check [here](https://python-poetry.org/docs/pyproject/).
+- `poetry.lock`: [Poetry](https://python-poetry.org/docs/) lock file to ensure consistent and locked set of dependencies for this project in all environments. This file is managed by poetry and should not be modified manually.
+- `poetry.toml`: Local [poetry configurations](https://python-poetry.org/docs/cli/#config).
+- `tasks.py`: [`invoke`](https://www.pyinvoke.org/) tasks for this project. Common Application tasks are imported from the shared libraries. You can extend this file to add custom tasks for your project.
+- `application-metadata.json`: This defines the application metadata. This includes things like who created the application, owner team, etc. This file is synced from the metadata repo and should not be modified manually.
+- `pre-commit-config.yaml`: This file defines the [pre-commit](https://pre-commit.com/) hooks for this repository.
+
+## Getting Started
+
+If this is not your first time working with this stack, you can skip the following steps and jump to [Install and Start virtualenv](#install-and-start-virtualenv).
+
+
+### Install Python
+
+Visit [python.org](https://www.python.org/downloads/mac-osx/) and download the installer for Python 3.10.
+
+### Install Poetry
+
+Once Python is installed, you can install Poetry, a dependency management and packaging tool. Here's how to install it:
+
+```shell
+# Install poetry
+curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.5.1 python3.10 -
+
+# Verify Installation
+poetry --version
+```
+
+Alternatively, Poetry is available through Homebrew:
+
+```shell
+brew install poetry python@3.10
+```
+
+### Configure Artifactory
+This project uses Coursera Pypi server in Artifactory.
+If you don't have ~/.artifactory_credentials already configured for BE or FE stack, follow [here](https://coursera.atlassian.net/wiki/spaces/EN/pages/46366877/General+Setup#Set-up-Artifactory-credentials) to create your artifactory credentials.
+You do not need the web repository and the yarn command. Just create a ~/.artifactory_credentials file with the four properties as shown in the document with your own credentials.
+Also, use your own credentials in the following command.
+
+```shell
+# Initialize artifactory credentials
+poetry config http-basic.coursera-pypi-virtual <ARTIFACTORY_USERNAME> <ARTIFACTORY_PASSWORD> --no-interaction
+
+```
+
+
+### Install and Start virtualenv
+This project uses an `in-project` venv config at the root level. You need an up to date and activated venv to develop in this repository.
+From the project root run:
+
+```shell
+# Use Python version 3.10
+poetry env use 3.10
+
+# Install venv and all dependencies
+poetry install
+
+# activate the virtualenv
+poetry shell
+```
+
+You can also configure your Intellij to use the created poetry environment as the project interpreter.
+
+## Commands
+The following commands assumes you have an activated virtualenv from the previous step.
+For convenience, this project provides a set of `invoke` tasks to streamline common operations for local development, that supports the following commands.
+
+To see a list of available commands and the help note run:
+```shell
+invoke --list
+```
+
+### Initial Dev Setup
+For the first time working with this repository, you'll need to do some initial setup including Artifactory configuration and installing pre-commit hooks.
+The following command automates the initial setup:
+
+```shell
+invoke init-dev
+```
+
+
+### Build
+
+To build all projects:
+
+```shell
+invoke build
+```
+
+### Test
+
+To run tests for the project and check test coverage:
+
+```shell
+invoke test
+```
+
+### Lock
+
+To lock the dependencies for all projects:
+
+```shell
+invoke lock
+```
+
+### Install
+
+To re-install the dependencies for all projects:
+
+```shell
+invoke install
+
+# or from the root of the project:
+poetry install
+```
+
+### Adding Dependencies
+This is a standard python project with pyproject.toml. Poetry commands (other than `poetry publish`) are valid in this project.
+For example to add a new dev dependency under a subproject:
+
+```shell
+poetry add sample-runtime-package
+poetry add -D sample-dev-package
+```
+
+**_Do not use `poetry publish` in data application projects as the application artifacts are not supposed to be published to pypi._**
+
+

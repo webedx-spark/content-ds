@@ -1,0 +1,25 @@
+# WARNING: This file is managed by shared-data-libraries.
+# DO NOT MODIFY THIS FILE DIRECTLY.
+# Changes should be made in the source template at shared-data-libraries repository.
+
+name: Preview Manual
+concurrency:
+  group: preview-{{ '${{ github.event.inputs.branch }}' }}
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        type: string
+        required: true
+        description: 'Name of branch to preview. Current commit is inferred automatically.'
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write # This is required to assume aws iam role.
+jobs:
+  workflow-call:
+    uses: webedx-spark/shared-data-libraries/.github/workflows/data-application-preview.yaml@{{ courdata_version }}
+    with:
+      ref: {{ '${{ github.event.inputs.branch }}' }}
+      shared_library_ref: {{ courdata_version }}
+    secrets: inherit

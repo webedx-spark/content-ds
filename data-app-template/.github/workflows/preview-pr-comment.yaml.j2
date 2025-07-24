@@ -1,0 +1,21 @@
+# WARNING: This file is managed by shared-data-libraries.
+# DO NOT MODIFY THIS FILE DIRECTLY.
+# Changes should be made in the source template at shared-data-libraries repository.
+
+name: Preview from PR
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write # This is required to assume aws iam role.
+jobs:
+  workflow-call:
+    uses: webedx-spark/shared-data-libraries/.github/workflows/data-application-preview.yaml@{{ courdata_version }}
+    with:
+      issue_number: {{ '${{ github.event.issue.number }}' }}
+      is_pr_comment: true
+      ref: refs/pull/{{ '${{ github.event.issue.number }}' }}/head
+      shared_library_ref: {{ courdata_version }} 
+    secrets: inherit

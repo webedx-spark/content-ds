@@ -1,0 +1,23 @@
+# WARNING: This file is managed by shared-data-libraries.
+# DO NOT MODIFY THIS FILE DIRECTLY.
+# Changes should be made in the source template at shared-data-libraries repository.
+
+name: Deploy Workflow
+concurrency: deploy-wf
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        type: string
+        required: true
+        description: 'Tag of the release to checkout and deploy'
+permissions:
+  contents: read
+  id-token: write # This is required to assume aws iam role.
+jobs:
+  workflow-call:
+    uses: webedx-spark/shared-data-libraries/.github/workflows/data-application-workflow-deploy.yaml@{{ courdata_version }}
+    with:
+      release_version: {{ '${{ github.event.inputs.release_version }}' }}
+      shared_library_ref: {{ courdata_version }} 
+    secrets: inherit

@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "{{name}}"
+
+# This is a placeholder version. Data Application version is tracked with Github releases and tags.
+version = "0.0.0"
+description = "{{description}}"
+authors = ["{{email.split('@')|first}} <{{email}}>"]
+readme = "README.md"
+packages = [{include = "{{name_snake_cased}}"}]
+classifiers = [
+    "Private :: Do not Upload",  # Prevent uploading to PyPI
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+courdata-core = "{{courdata_version}}"
+
+[tool.poetry.group.dev.dependencies]
+courdata-dev-tools = "{{courdata_version}}"
+
+
+[[tool.poetry.source]]
+name = "coursera-pypi-virtual"
+url = "https://coursera.jfrog.io/artifactory/api/pypi/pypi-virtual/simple"
+priority = "supplemental"
+
+[[tool.poetry.source]]
+name = "pypi"
+priority = "primary"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+# Enable the pycodestyle (`E`) and Pyflakes (`F`) and isort (`I) rules by default.
+lint.select = ["E", "F", "I"]
+lint.ignore = ["E501"]
+lint.fixable = ["ALL"]
+lint.unfixable = []
+lint.per-file-ignores = {}
+lint.isort.combine-as-imports = true
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+exclude = [".github", ".venv", "build", "dist", "scripts"]
+line-length = 100
+target-version = "py310"

@@ -1,0 +1,15 @@
+jobs:
+  {{name}}-main-job:
+    dev_only: True # Do not deploy to prod workspace
+    runs_on:
+      schedule: 0 0 0 1 * ? *
+    tasks:
+      main:
+        notebook: sample
+        depends_on: [] # Task Name
+        # run_if: (Valid Values: ALL_DONE, ALL_FAILED, ALL_SUCCESS, AT_LEAST_ONE_FAILED, AT_LEAST_ONE_SUCCESS)
+        max_retries: 0
+        timeout_seconds: 3600
+        owner_email: {{email}}
+        parameters:
+          # param_1: val_1
